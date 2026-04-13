@@ -1,9 +1,6 @@
 use rand::Rng;
 
-#[derive(Debug)]
-pub enum SensorError {
-    Failed,
-}
+use crate::sensors::{Sensor, SensorError};
 
 pub struct ActuatorSensor {
     failure_rate: f32,
@@ -13,8 +10,12 @@ impl ActuatorSensor {
     pub fn new(failure_rate: f32) -> Self {
         Self { failure_rate }
     }
+}
 
-    pub fn read(&self) -> Result<&'static str, SensorError> {
+impl Sensor for ActuatorSensor {
+    type Output = &'static str;
+
+    fn read(&self) -> Result<Self::Output, SensorError> {
         let mut rng = rand::thread_rng();
 
         if rng.gen_bool(self.failure_rate as f64) {
